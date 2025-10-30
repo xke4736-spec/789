@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SDGs 性別平權</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Noto Sans TC", sans-serif;
+      background: linear-gradient(to bottom, #a4d4f2 0%, #fff4cf 100%);
+      overflow: hidden;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      background-color: rgba(255,255,255,0.85);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 10;
+    }
+    h1 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 800;
+    }
+    .score-box {
+      font-weight: 700;
+      background: rgba(255,255,255,0.7);
+      padding: 6px 12px;
+      border-radius: 8px;
+      box-shadow: inset 0 0 4px rgba(0,0,0,0.1);
+    }
+    #village {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      background-image: url('https://cdn.pixabay.com/photo/2017/03/27/14/56/huts-2178834_1280.jpg');
+      background-size: cover;
+      background-position: center;
+      overflow: hidden;
+    }
+    .hut {
+      position: absolute;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .hut:hover {
+      transform: scale(1.08);
+    }
+    .quiz-box {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #fff;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+      width: 90%;
+      max-width: 420px;
+      z-index: 20;
+      display: none;
+    }
+    .quiz-box h2 { margin-top: 0; font-size: 20px; }
+    .quiz-box button {
+      display: block;
+      width: 100%;
+      margin: 6px 0;
+      padding: 10px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background: #f0f0f0;
+      transition: background 0.2s;
+    }
+    .quiz-box button:hover { background: #e0e0e0; }
+    .result-box {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+      text-align: center;
+      display: none;
+      z-index: 25;
+    }
+    .result-box h2 { margin-top: 0; }
+    .result-box button {
+      margin-top: 16px;
+      padding: 10px 16px;
+      background-color: #2d89ef;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>SDGs 性別平權</h1>
+    <div class="score-box">答對題數：<span id="score">0</span>/10</div>
+  </header>
+
+  <div id="village">
+    <img src="https://cdn-icons-png.flaticon.com/512/1866/1866061.png" class="hut" style="top:60%; left:25%; width:90px;" title="茅草屋1">
+    <img src="https://cdn-icons-png.flaticon.com/512/1866/1866059.png" class="hut" style="top:62%; left:50%; width:90px;" title="茅草屋2">
+    <img src="https://cdn-icons-png.flaticon.com/512/1866/1866064.png" class="hut" style="top:58%; left:75%; width:90px;" title="茅草屋3">
+  </div>
+
+  <div class="quiz-box" id="quizBox">
+    <h2 id="question">題目</h2>
+    <div id="options"></div>
+  </div>
+
+  <div class="result-box" id="resultBox">
+    <h2 id="resultTitle"></h2>
+    <p id="resultText"></p>
+    <button id="resultBtn"></button>
+  </div>
+
+  <script>
+    const quizData = [
+      { q: '男女應享有同樣的受教育權利。', options: ['✔️ 正確', '❌ 錯誤'], correct: 0 },
+      { q: '女生不應該學理工，這是男生的專長。', options: ['✔️ 正確', '❌ 錯誤'], correct: 1 },
+      { q: '家庭與職場應該共同支持性別平等。', options: ['✔️ 正確', '❌ 錯誤'], correct: 0 },
+      { q: '男性與女性在社會中的角色應該自由選擇。', options: ['✔️ 正確', '❌ 錯誤'], correct: 0 },
+      { q: '女性不能參與村莊的決策會議。', options: ['✔️ 正確', '❌ 錯誤'], correct: 1 },
+      { q: '性別平權有助於促進社會的整體發展。', options: ['✔️ 正確', '❌ 錯誤'], correct: 0 },
+      { q: '男生哭泣是不應該的行為。', options: ['✔️ 正確', '❌ 錯誤'], correct: 1 },
+      { q: '女性應該有與男性同等的工作機會。', options: ['✔️ 正確', '❌ 錯誤'], correct: 0 },
+      { q: '家務只應該由女性負責。', options: ['✔️ 正確', '❌ 錯誤'], correct: 1 },
+      { q: '推動性別平權是聯合國永續發展目標之一。', options: ['✔️ 正確', '❌ 錯誤'], correct: 0 }
+    ];
+
+    let score = 0;
+    let currentIndex = 0;
+    const totalQuestions = quizData.length;
+
+    const scoreEl = document.getElementById('score');
+    const quizBox = document.getElementById('quizBox');
+    const questionEl = document.getElementById('question');
+    const optionsEl = document.getElementById('options');
+    const resultBox = document.getElementById('resultBox');
+    const resultTitle = document.getElementById('resultTitle');
+    const resultText = document.getElementById('resultText');
+    const resultBtn = document.getElementById('resultBtn');
+
+    document.querySelectorAll('.hut').forEach(hut => {
+      hut.addEventListener('click', () => showQuestion());
+    });
+
+    function showQuestion() {
+      if (currentIndex >= totalQuestions) return;
+      const q = quizData[currentIndex];
+      questionEl.textContent = q.q;
+      optionsEl.innerHTML = '';
+      q.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.textContent = opt;
+        btn.onclick = () => checkAnswer(idx === q.correct);
+        optionsEl.appendChild(btn);
+      });
+      quizBox.style.display = 'block';
+    }
+
+    function checkAnswer(isCorrect) {
+      if (isCorrect) score++;
+      scoreEl.textContent = score;
+      currentIndex++;
+      quizBox.style.display = 'none';
+      if (currentIndex < totalQuestions) {
+        setTimeout(showQuestion, 500);
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      resultBox.style.display = 'block';
+      if (score >= 8) {
+        resultTitle.textContent = '任務成功 🎉';
+        resultText.innerHTML = `你的得分：${score}/${totalQuestions}<br>你已成功推動村莊的性別平權！`;
+        resultBtn.textContent = '前往下一關';
+        resultBtn.onclick = () => window.location.href = 'level2.html';
+      } else {
+        resultTitle.textContent = '再接再厲 💪';
+        resultText.textContent = `你的得分：${score}/${totalQuestions}，需要至少 8 題才算通過。`;
+        resultBtn.textContent = '重新挑戰';
+        resultBtn.onclick = () => location.reload();
+      }
+    }
+  </script>
+</body>
+</html>
+
